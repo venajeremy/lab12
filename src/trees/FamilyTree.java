@@ -32,11 +32,8 @@ public class FamilyTree
         void addChild(TreeNode childNode)
         {
             // Add childNode to this node's children list. Also
-        	
-        	this.children.add(childNode);
-        	
             // set childNode's parent to this node.
-        	
+        	this.children.add(childNode);
         	childNode.parent = this;
         }
         
@@ -46,24 +43,20 @@ public class FamilyTree
         TreeNode getNodeWithName(String targetName)
         {
             // Does this node have the target name?
-            if (this.getName().equals(targetName)) {
+            if (this.getName().equals(targetName))
                 return this;
-            }     
+                    
             // No, recurse. Check all children of this node.
             for (TreeNode child: children)
             {
                 // If child.getNodeWithName(targetName) returns a non-null node,
-            	
                 // then that's the node we're looking for. Return it.
             	TreeNode search = child.getNodeWithName(targetName);
-            	if(search!=null) {
-            		//System.out.println("Found: "+search.getName());
+            	if (search!=null) {
             		return search;
             	}
-            	//System.out.println(targetName+" is not within "+child.getName());
             }
             
-            //System.out.println("Searched every child not found anywhere!!!");
             // Not found anywhere.
             return null;
         }
@@ -73,22 +66,18 @@ public class FamilyTree
         // ending with the root. Order is from recent to ancient.
         ArrayList<TreeNode> collectAncestorsToList()
         {
-            ArrayList<TreeNode> ancestors = new ArrayList<TreeNode>();
+            ArrayList<TreeNode> ancestors = new ArrayList<>();
 
             // ?????  Collect ancestors of this TreeNode into the array list. HINT: going up
             // the nodes of a tree is like traversing a linked list. If that isn’t clear,
             // draw a tree, mark any leaf node, and then mark its ancestors in order from
             // recent to ancient. Expect a question about this on the final exam.
-      
             TreeNode temp = this;
-            //System.out.println(temp.parent.getName());
-            while(temp.parent!=null) {
-            	
+            while (temp.parent!= null) {
             	temp = temp.parent;
             	ancestors.add(temp);
-            	//System.out.println("Added: "+temp.getName());
             }
-           
+
             return ancestors;
         }
         
@@ -148,41 +137,37 @@ public class FamilyTree
 	private void addLine(String line) throws TreeException
 	{
 		// Extract parent and array of children.
-		int colonIndex = line.indexOf(':');// should be the index of the colon in line.
+		int colonIndex = line.indexOf(':');
 		if (colonIndex < 0)
-			throw new TreeException("Line Misformatted: No colon (:) present");//throw a TreeException with a useful message
-		String parent = line.substring(0, colonIndex);// The substring of line that starts at char #0 and ends just before colonIndex. Check the API for 
-				           //class java.util.String, method substring(), if you need guidance.
-		String childrenString = line.substring(colonIndex+1,line.length());//?? The substring of line that starts just after colonIndex and goes through the end of
-				                  // the line. You'll use a different version of substring().
-		String[] childrenArray = childrenString.split(",");//?? Call childrenString.split(). Check the API for details. The result will be an array
-				                   // of strings, with the separating commas thrown away.
+			throw new TreeException("Syntax error in family tree no colon.");
+		String parent = line.substring(0, colonIndex); //The substring of line that starts at char #0 and ends just before colonIndex. Check the API for 
+				          // class java.util.String, method substring(), if you need guidance.
+		String childrenString = line.substring(colonIndex + 1, line.length()); //The substring of line that starts just after colonIndex and goes through the end of
+				                   //the line. You'll use a different version of substring().
+		String[] childrenArray = childrenString.split(","); //Call childrenString.split(). Check the API for details. The result will be an array
+				                    //of strings, with the separating commas thrown away.
 		
 		// Find parent node. If root is null then the tree is empty and the
 		// parent node must be constructed. Otherwise the parent node should be 
 		// somewhere in the tree.
-		
 		TreeNode parentNode;
 		if (root == null)
 			parentNode = root = new TreeNode(parent);
 		else
 		{
-			parentNode = root.getNodeWithName(parent); //There's a method in Node that searches for a named node. 
-			if(parentNode==null) {
-				//System.out.println(parent);
-				throw new TreeException("Given parent is not a child within bloodline");
-				//If the parent node wasn't found, there must have been something wrong in the 
-			}
+			parentNode = root.getNodeWithName(parent);  //There's a method in Node that searches for a named node. 
+			if (parentNode == null)
+				throw new TreeException("Parent node not found."); //??? If the parent node wasn't found, there must have been something wrong in the 
 				//data file. Throw an exception.
 		}
 		
 		// Add child nodes to parentNode.
-		for(int i =0; i<childrenArray.length; i++) {
-			TreeNode child = new TreeNode(childrenArray[i]);
-			parentNode.addChild(child);
-		}
-		
 		//?? For each name in childrenArray, create a new node and add that node to parentNode.
+		for (int i = 0; i < childrenArray.length; i++) {
+			TreeNode child = new TreeNode(childrenArray[i]);
+			parentNode.children.add(child);
+		}
+
 	}
 	
 	
@@ -195,13 +180,14 @@ public class FamilyTree
 	TreeNode getMostRecentCommonAncestor(String name1, String name2) throws TreeException
 	{
 		// Get nodes for input names.
-		TreeNode node1 = root.getNodeWithName(name1);		// node whose name is name1
+		TreeNode node1 = root.getNodeWithName(name1);	// node whose name is name1
 		if (node1 == null)
-			throw new TreeException("Node One is not present in the bloodline");//??? Throw a TreeException with a useful message
-		
-		TreeNode node2 = root.getNodeWithName(name2);		// node whose name is name2
+			throw new TreeException("First node has a null value.");
+			//??? Throw a TreeException with a useful message
+		TreeNode node2 = root.getNodeWithName(name2);	// node whose name is name2
 		if (node2 == null)
-			throw new TreeException("Node Two is not present in the bloodline");//??? Throw TreeException with a useful message
+			throw new TreeException("Second node has a null value.");
+			//??? Throw TreeException with a useful message
 		
 		// Get ancestors of node1 and node2.
 		ArrayList<TreeNode> ancestorsOf1 = node1.collectAncestorsToList();
@@ -209,18 +195,6 @@ public class FamilyTree
 		
 		// Check members of ancestorsOf1 in order until you find a node that is also
 		// an ancestor of 2. 
-		
-		
-		/*
-		for (TreeNode n1: ancestorsOf1)
-			System.out.println(n1.getName());
-		System.out.println("****************");
-		for (TreeNode n2: ancestorsOf2)
-			System.out.println(n2.getName());
-		*/
-		
-		
-		
 		for (TreeNode n1: ancestorsOf1)
 			if (ancestorsOf2.contains(n1))
 				return n1;
